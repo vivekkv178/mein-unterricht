@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Compiles down to ES6 for better compatibility
+    "module": "CommonJS", // Uses CommonJS for Node.js compatibility
+    "outDir": "dist", // Output compiled files to `dist/`
+    "rootDir": "./", // Source files are inside `src/`
+    "strict": true, // Enables strict type checking
+    "esModuleInterop": true, // Fixes default import issues
+    "forceConsistentCasingInFileNames": true, // Ensures consistent file naming
+    "skipLibCheck": true // Skips checking declaration files (faster build)
+  },
+  "exclude": ["node_modules", "dist"] // Exclude unnecessary directories
+}

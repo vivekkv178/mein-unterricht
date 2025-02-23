@@ -1,0 +1,28 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_MEIN_BE_BASE_URL: http://localhost:4001/
+
+  backend:
+    build: ./backend
+    ports:
+      - "4001:4000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://mein_user:mein_password@db:5432/mein_db
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: root_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/pg_db_init.sql:/docker-entrypoint-initdb.d/pg_db_init.sql
