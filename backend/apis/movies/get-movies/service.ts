@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import createError from "http-errors";
 import executeQuery from "../../../utils/execute-query";
-import httpClient from "../../../utils/http-client";
+import { getAllMoviesQuery } from "./query";
 
 const getMovies = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const query = "SELECT NOW();";
-    const result = await executeQuery(query);
+    const result = await executeQuery(getAllMoviesQuery);
 
     res.status(200).json({ data: result });
   } catch (error) {

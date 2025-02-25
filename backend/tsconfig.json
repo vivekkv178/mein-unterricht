@@ -7,7 +7,8 @@
     "strict": true, // Enables strict type checking
     "esModuleInterop": true, // Fixes default import issues
     "forceConsistentCasingInFileNames": true, // Ensures consistent file naming
-    "skipLibCheck": true // Skips checking declaration files (faster build)
+    "skipLibCheck": true, // Skips checking declaration files (faster build)
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules", "dist"] // Exclude unnecessary directories
 }
