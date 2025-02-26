@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
-import type { ColDef } from "ag-grid-community";
+import type { ColDef, IGetRowsParams } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 
 import { BE_ROUTES, HttpMethod } from "@/lib/constants";
@@ -23,7 +23,7 @@ interface Movie {
 const MoviesTable = () => {
   const api = useApi();
 
-  const [rowData, setRowData] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(false);
   const [columnDefs] = useState<ColDef[]>([
     {
       headerName: "S.no",
@@ -34,12 +34,14 @@ const MoviesTable = () => {
       headerName: "Poster",
       cellRenderer: (params: { data?: Movie }) => {
         return params?.data?.poster_url ? (
-          <Image
-            src={params?.data?.poster_url}
-            alt=""
-            width={100}
-            height={100}
-          />
+          <div style={{ width: "50px", height: "50px", position: "relative" }}>
+            <Image
+              src={params.data.poster_url}
+              alt={params.data.title}
+              fill
+              style={{ objectFit: "cover" }}
+            />
+          </div>
         ) : null;
       },
     },
@@ -48,17 +50,42 @@ const MoviesTable = () => {
     { headerName: "Plot", field: "plot" },
   ]);
 
-  useEffect(() => {
-    getMovies();
+  const getServerSideDatasource = () => {
+    return {
+      getRows: async (params: IGetRowsParams) => {
+        const { startRow, endRow } = params;
+
+        try {
+          setLoading(true);
+
+          const response = await api.callApi({
+            url: BE_ROUTES.GET_MOVIES,
+            method: HttpMethod.GET,
+            params: {
+              startRow,
+              endRow,
+            },
+          });
+
+          setLoading(false);
+
+          params.successCallback(response.data, response?.totalRecords);
+        } catch (error) {
+          console.log("Error while fecthing data", error);
+          params.failCallback();
+        }
+      },
+    };
+  };
+
+  const onGridReady = useCallback((params: any) => {
+    const datasource = getServerSideDatasource();
+    params.api.setGridOption("datasource", datasource);
   }, []);
 
-  const getMovies = async () => {
-    const response = await api.callApi({
-      url: BE_ROUTES.GET_MOVIES,
-      method: HttpMethod.GET,
-    });
-    setRowData(response?.data);
-  };
+  const getRowId = useCallback(function (params: any) {
+    return params.data.imdb_id;
+  }, []);
 
   const [defaultColDef] = useState<ColDef>({
     resizable: true,
@@ -67,11 +94,17 @@ const MoviesTable = () => {
   return (
     <div className="w-[90%] h-[80vh] m-auto">
       <AgGridReact
-        rowData={rowData}
         columnDefs={columnDefs}
+        rowModelType={"infinite"}
         defaultColDef={defaultColDef}
-        rowNumbers={true}
         pagination={true}
+        onGridReady={onGridReady}
+        cacheBlockSize={10}
+        paginationPageSize={10}
+        paginationPageSizeSelector={[10, 20, 50, 100]}
+        maxConcurrentDatasourceRequests={1}
+        getRowId={getRowId}
+        loading={loading}
       />
     </div>
   );

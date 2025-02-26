@@ -8,6 +8,7 @@ const useApi = () => {
         method: config.method,
         url: config.url,
         data: config?.data,
+        ...config,
       });
       return response?.data;
     } catch (error: unknown) {
