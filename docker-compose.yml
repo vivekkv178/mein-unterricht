@@ -13,7 +13,8 @@ services:
     ports:
       - "4001:4000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgres://mein_user:mein_password@db:5432/mein_db
 
@@ -26,3 +27,8 @@ services:
       - "5432:5432"
     volumes:
       - ./db/pg_db_init.sql:/docker-entrypoint-initdb.d/pg_db_init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

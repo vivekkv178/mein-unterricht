@@ -8,7 +8,9 @@
     "dev": "ts-node-dev server.ts",
     "start": "db-migrate up && node dist/server.js",
     "build": "tsc",
-    "create-db": "npx db-migrate create movies-v1 --sql-file"
+    "create-db": "npx db-migrate create movies-v1 --sql-file",
+    "db-up": "db-migrate up",
+    "db-down": "db-migrate down"
   },
   "keywords": [],
   "author": "",

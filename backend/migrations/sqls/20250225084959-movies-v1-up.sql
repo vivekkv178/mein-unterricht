@@ -1,6 +1,6 @@
 /* Replace with your SQL commands */
 CREATE TABLE IF NOT EXISTS movies (
-  id SERIAL PRIMARY KEY,
+  imdb_id VARCHAR(255) PRIMARY KEY,  -- Use IMDb ID as the primary key
   title VARCHAR(255) NOT NULL,
   director VARCHAR(255),
   plot TEXT,
