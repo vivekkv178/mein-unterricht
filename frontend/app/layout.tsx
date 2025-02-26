@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
+ModuleRegistry.registerModules([AllCommunityModule]);
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

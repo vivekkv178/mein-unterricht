@@ -3,7 +3,7 @@ export const ENV_VARIABLES = {
 };
 
 export const BE_ROUTES = {
-  GET_MOVIES: "/",
+  GET_MOVIES: "/get-movies",
 };
 
 export enum HttpMethod {
