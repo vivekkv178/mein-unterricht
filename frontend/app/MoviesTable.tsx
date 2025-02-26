@@ -33,10 +33,28 @@ const MoviesTable = () => {
     {
       headerName: "S.no",
       valueGetter: "node.rowIndex + 1",
+      width: 120,
+      filter: false,
     },
-    { headerName: "IMDB ID", field: "imdb_id" },
+    {
+      headerName: "IMDB Link",
+      field: "imdb_id",
+      filter: false,
+      cellRenderer: (params: { data?: Movie }) => {
+        return params?.data?.imdb_id ? (
+          <a
+            href={`https://www.imdb.com/title/${params.data.imdb_id}`}
+            target="_blank"
+            className=""
+          >
+            {`https://www.imdb.com/title/${params.data.imdb_id}`}
+          </a>
+        ) : null;
+      },
+    },
     {
       headerName: "Poster",
+      filter: false,
       cellRenderer: (params: { data?: Movie }) => {
         return params?.data?.poster_url ? (
           <div style={{ width: "50px", height: "50px", position: "relative" }}>
@@ -58,7 +76,11 @@ const MoviesTable = () => {
   const getServerSideDatasource = () => {
     return {
       getRows: async (params: IGetRowsParams) => {
-        const { startRow, endRow } = params;
+        const { startRow, endRow, filterModel } = params;
+
+        const title = filterModel?.title?.filter || "";
+        const director = filterModel?.director?.filter || "";
+        const plot = filterModel?.plot?.filter || "";
 
         try {
           setLoading(true);
@@ -69,6 +91,9 @@ const MoviesTable = () => {
             params: {
               startRow,
               endRow,
+              title,
+              director,
+              plot,
             },
           });
 
@@ -94,7 +119,11 @@ const MoviesTable = () => {
 
   const [defaultColDef] = useState<ColDef>({
     resizable: true,
-    filter: true,
+    sortable: false,
+    filter: "agTextColumnFilter", // Enable text filtering
+    filterParams: {
+      filterOptions: ["equals"], // Allow only "equals" filter
+    },
   });
   return (
     <div className="w-[90%] h-[80vh] m-auto">

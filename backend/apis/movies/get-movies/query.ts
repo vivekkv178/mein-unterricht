@@ -1,9 +1,18 @@
 export const getAllMoviesQuery = `
-      SELECT imdb_id, title, director, plot, year, poster_url
-      FROM movies
-      LIMIT $1 OFFSET $2;
+    SELECT * 
+    FROM movies
+    WHERE 
+      title ILIKE $1
+      AND director ILIKE $2
+      AND plot ILIKE $3
+    LIMIT $4 OFFSET $5;
 `;
 
 export const getAllMoviesCountQuery = `
-SELECT COUNT(*) FROM movies;
+     SELECT COUNT(*) 
+    FROM movies
+    WHERE 
+      title ILIKE $1
+      AND director ILIKE $2
+      AND plot ILIKE $3;
 `;

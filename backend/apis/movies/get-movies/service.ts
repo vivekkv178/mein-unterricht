@@ -5,26 +5,30 @@ import { getAllMoviesCountQuery, getAllMoviesQuery } from "./query";
 
 const getMovies = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { startRow, endRow } = req.query;
+    const startRow = Number(req.query.startRow) || 0;
+    const endRow = Number(req.query.endRow) || 10;
+    const title = req.query.title || "";
+    const director = req.query.director || "";
+    const plot = req.query.plot || "";
 
-    // Convert query params to numbers with default values
-    const start = parseInt(startRow as string) || 0;
-    const end = parseInt(endRow as string) || 10;
-    const limit = end - start;
-    const offset = start;
+    const movies = await executeQuery(getAllMoviesQuery, [
+      `%${title}%`,
+      `%${director}%`,
+      `%${plot}%`,
+      endRow - startRow,
+      startRow,
+    ]);
+    const totalCountResult = await executeQuery(getAllMoviesCountQuery, [
+      `%${title}%`,
+      `%${director}%`,
+      `%${plot}%`,
+    ]);
 
-    const movies = await executeQuery(getAllMoviesQuery, [limit, offset]);
+    const totalRecords = parseInt(totalCountResult[0].count, 10);
 
-    // Fetch total count for AG Grid
-    const totalCountResult = await executeQuery(getAllMoviesCountQuery);
-    const totalRecords = parseInt(totalCountResult[0].count);
-
-    res.status(200).json({
-      data: movies,
-      totalRecords,
-    });
+    res.status(200).json({ data: movies, totalRecords });
   } catch (error) {
-    console.error("Error fetching movies:", error);
+    console.log(error);
     next(createError(500, "An error occurred while fetching movies."));
   }
 };

@@ -4,6 +4,7 @@ export const ENV_VARIABLES = {
 
 export const BE_ROUTES = {
   GET_MOVIES: "/get-movies",
+  POLL_MOVIES: "/poll-movies",
 };
 
 export enum HttpMethod {
