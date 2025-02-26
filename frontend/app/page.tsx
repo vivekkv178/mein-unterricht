@@ -19,7 +19,7 @@ export default function Home() {
         method: HttpMethod.GET,
       });
 
-      if (response.data) {
+      if (response.message) {
         setMessage(
           "Polling movies initiated successfully! Please refresh the page and check for movies loaded."
         );
