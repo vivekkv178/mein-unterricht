@@ -1,7 +1,12 @@
 "use client";
 import React, { useCallback, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
-import type { ColDef, IGetRowsParams } from "ag-grid-community";
+import type {
+  ColDef,
+  GetRowIdParams,
+  GridReadyEvent,
+  IGetRowsParams,
+} from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 
 import { BE_ROUTES, HttpMethod } from "@/lib/constants";
@@ -78,12 +83,12 @@ const MoviesTable = () => {
     };
   };
 
-  const onGridReady = useCallback((params: any) => {
+  const onGridReady = useCallback((params: GridReadyEvent) => {
     const datasource = getServerSideDatasource();
     params.api.setGridOption("datasource", datasource);
   }, []);
 
-  const getRowId = useCallback(function (params: any) {
+  const getRowId = useCallback(function (params: GetRowIdParams) {
     return params.data.imdb_id;
   }, []);
 
