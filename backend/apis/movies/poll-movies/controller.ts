@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from "express";
 import pollMovies from "./service";
+import COMMON_CONFIG from "../../../config/common-config";
 
 const router: Router = express.Router();
 
@@ -33,6 +34,6 @@ const router: Router = express.Router();
  *                 message:
  *                   type: string
  */
-router.get("/poll-movies", pollMovies);
+router.get(COMMON_CONFIG.POLL_MOVIES_ROUTE, pollMovies);
 
 export default router;

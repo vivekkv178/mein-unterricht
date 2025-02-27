@@ -10,7 +10,7 @@ const pool = new Pool({
 // Test database connection
 pool
   .connect()
-  .then(() => logger.info("🟢 Connected to Supabase PostgreSQL"))
+  .then(() => logger.info("🟢 Connected to PostgreSQL"))
   .catch((err: Error) => logger.error("🔴 Error connecting to database:", err));
 
 export default pool;

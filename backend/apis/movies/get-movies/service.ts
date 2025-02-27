@@ -6,8 +6,9 @@ import logger from "../../../logger";
 
 const getMovies = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const startRow = Number(req.query.startRow) || 0;
-    const endRow = Number(req.query.endRow) || 10;
+    const { startRow: queryStartRow, endRow: queryEndRow } = req.query;
+    const startRow = Number(queryStartRow) > 0 ? Number(queryStartRow) : 0;
+    const endRow = Number(queryEndRow) > 0 ? Number(queryEndRow) : 10;
     const title = req.query.title || "";
     const director = req.query.director || "";
     const plot = req.query.plot || "";
