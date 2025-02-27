@@ -3,27 +3,29 @@ import createError from "http-errors";
 import executeQuery from "../../../utils/execute-query";
 import httpClient from "../../../utils/http-client";
 import { ENV_CONFIG } from "../../../config/env-config";
+import { insertErrorQuery, insertMovieQuery } from "./query";
+import logger from "../../../logger";
 
 const pollMovies = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.status(200).json({ message: "Movie polling started!" });
+    res.status(200).json({ message: "Movie polling initiated!" });
     await fetchMovies(1);
   } catch (error) {
-    console.log(error);
+    logger.error(error, "Error in pollMovies");
     next(createError(500, "An error occurred while polling movies."));
   }
 };
 
 async function fetchMovies(page = 1) {
   try {
-    console.log(`Fetching page ${page}...`);
+    logger.info(`Fetching page ${page}...`);
     const data: any = await httpClient({
       method: "get",
       url: `${ENV_CONFIG.OMDB_API_DOMAIN}/?s=space&y=2020&type=movie&page=${page}&apikey=${ENV_CONFIG.OMDB_API_KEY}`,
     });
 
     if (data?.Response === "False") {
-      console.log(`No movies found on page ${page}.`);
+      logger.error(`No movies found on page ${page}.`);
       await logError("fetch_api_error", `No movies found`, page);
       return;
     }
@@ -39,7 +41,7 @@ async function fetchMovies(page = 1) {
       await fetchMovies(page + 1);
     }
   } catch (error: any) {
-    console.error(`Error fetching page ${page}:`, error);
+    logger.error(`Error fetching page ${page}:`, error);
     await logError("fetch_api_error", error.message, page);
   }
 }
@@ -52,19 +54,13 @@ async function saveMoviesToDB(movies: any[]) {
 
       // Only proceed with DB insert if details were successfully fetched
       if (!movieDetails) {
-        console.log(
+        logger.error(
           `Skipping insert for movie: ${movie.Title}, details not fetched.`
         );
         return;
       }
 
-      const query = `
-      INSERT INTO movies (imdb_id, title, director, plot, year, poster_url)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      ON CONFLICT (imdb_id) DO NOTHING;
-    `;
-
-      await executeQuery(query, [
+      await executeQuery(insertMovieQuery, [
         movieDetails.id, // imdbID as primary key
         movieDetails.title,
         movieDetails.director,
@@ -73,9 +69,9 @@ async function saveMoviesToDB(movies: any[]) {
         movieDetails.poster_url,
       ]);
 
-      console.log(`Inserted movie: ${movieDetails.title}`);
+      logger.info(`Inserted movie: ${movieDetails.title}`);
     } catch (error: any) {
-      console.error(`Error inserting movie: ${movie.Title}`, error);
+      logger.error(`Error inserting movie: ${movie.Title}`, error);
 
       // Check if the error is from fetchMovieDetails or the DB insert
       if (error.message === "Movie details fetch failed") {
@@ -101,7 +97,7 @@ async function saveMoviesToDB(movies: any[]) {
 
 async function fetchMovieDetails(imdbID: string) {
   try {
-    console.log(`Fetching details for movie: ${imdbID}`);
+    logger.error(`Fetching details for movie: ${imdbID}`);
 
     const response: any = await httpClient({
       method: "get",
@@ -117,7 +113,7 @@ async function fetchMovieDetails(imdbID: string) {
       poster_url: response.Poster !== "N/A" ? response.Poster : null,
     };
   } catch (error: any) {
-    console.error(`Error fetching details for ${imdbID}:`, error);
+    logger.error(`Error fetching details for ${imdbID}:`, error);
 
     // Insert API error into errors table
     await logError(
@@ -138,12 +134,7 @@ async function logError(
   page_number?: number,
   movie_id?: string
 ) {
-  const query = `
-    INSERT INTO errors (type, message, page_number, movie_id)
-    VALUES ($1, $2, $3, $4);
-  `;
-
-  await executeQuery(query, [
+  await executeQuery(insertErrorQuery, [
     type,
     message,
     page_number || null,

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import createError from "http-errors";
 import executeQuery from "../../../utils/execute-query";
 import { getAllMoviesCountQuery, getAllMoviesQuery } from "./query";
+import logger from "../../../logger";
 
 const getMovies = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,7 +29,7 @@ const getMovies = async (req: Request, res: Response, next: NextFunction) => {
 
     res.status(200).json({ data: movies, totalRecords });
   } catch (error) {
-    console.log(error);
+    logger.error(error, "Error in get-movies");
     next(createError(500, "An error occurred while fetching movies."));
   }
 };

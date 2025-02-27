@@ -3,9 +3,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import http from "http";
-import debug from "debug";
 import app from "./app"; // Ensure `app.ts` is properly typed
-const log = debug("backend:server");
+import logger from "./logger";
 
 /**
  * Get port from environment and store in Express.
@@ -22,7 +21,7 @@ const server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 server.listen(port, () => {
-  console.log(`🚀 Server running on http://localhost:${port}`);
+  logger.info(`🚀 Server running on http://localhost:${port}`);
 });
 server.on("error", onError);
 server.on("listening", onListening);
@@ -75,5 +74,5 @@ function onError(error: NodeJS.ErrnoException): void {
 function onListening(): void {
   const addr = server.address();
   const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr?.port}`;
-  log(`Listening on ${bind}`);
+  logger.info(`Listening on ${bind}`);
 }
