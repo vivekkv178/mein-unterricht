@@ -2,12 +2,6 @@
 
 This application allows you to poll movie data from an external API (OMDB) and store it in a local PostgreSQL database. It has a React frontend built with Next.js, a backend API built with Node.js, and server-side pagination with search functionality.
 
-## Architecture Overview
-
-![Architecture](https://raw.githubusercontent.com/vivekkv178/mein-unterricht/main/designs/Architecture.jpg)
-
-![Flow](https://raw.githubusercontent.com/vivekkv178/mein-unterricht/main/designs/Flowchart.jpg)
-
 ## Features
 
 - **Movie Polling**: Fetch movie data from OMDB API and store it in the local database.
@@ -74,6 +68,12 @@ The **Movies List** table will display all the movies that have been successfull
 ### 7. Error Handling
 
 If there are any errors during polling or database insertion, the errors will be logged into the database and can be viewed as needed.
+
+## Architecture Overview
+
+![Architecture](https://raw.githubusercontent.com/vivekkv178/mein-unterricht/main/designs/Architecture.jpg)
+
+![Flow](https://raw.githubusercontent.com/vivekkv178/mein-unterricht/main/designs/Flowchart.jpg)
 
 ## License
 
