@@ -4,7 +4,9 @@ This application allows you to poll movie data from an external API (OMDB) and s
 
 ## Architecture Overview
 
-![Architecture](https://your-architecture-image-url.com)
+![Architecture](https://raw.githubusercontent.com/vivekkv178/mein-unterricht/main/designs/Architecture.jpg)
+
+![Flow](https://raw.githubusercontent.com/vivekkv178/mein-unterricht/main/designs/Flowchart.jpg)
 
 ## Features
 
