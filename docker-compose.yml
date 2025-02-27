@@ -17,6 +17,11 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgres://mein_user:mein_password@db:5432/mein_db
+      DATABASE_HOST: localhost
+      DATABASE_USERNAME: mein_user
+      DATABASE_PASSWORD: mein_password
+      OMDB_API_KEY: <OMDB_API_KEY>
+      OMDB_API_DOMAIN: https://www.omdbapi.com
 
   db:
     image: postgres
