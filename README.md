@@ -77,8 +77,3 @@ If there are any errors during polling or database insertion, the errors will be
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
-**Note**: Be sure to replace `https://your-architecture-image-url.com` with the actual URL where your architecture diagram image is hosted.
-
-Let me know if you'd like to make further changes to the README!
