@@ -33,11 +33,8 @@ async function fetchMovies(page = 1) {
     await saveMoviesToDB(data.Search);
 
     const totalPages = Math.ceil(data.totalResults / 10);
-    /**
-     * @todo
-     * change after test
-     */
-    if (page < 1) {
+
+    if (page <= totalPages) {
       await fetchMovies(page + 1);
     }
   } catch (error: any) {
